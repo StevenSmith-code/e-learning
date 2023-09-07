@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  student: one
+  course: one
+  is_active: false
+  completion_percentage: 1.5
+  completed_at: 2023-09-07 12:41:18
+
+two:
+  student: two
+  course: two
+  is_active: false
+  completion_percentage: 1.5
+  completed_at: 2023-09-07 12:41:18

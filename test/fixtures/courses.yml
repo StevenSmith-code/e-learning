@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  content_link: MyString
+  price: 9.99
+  instructor: one
+  description: MyText
+  image_url: MyString
+  duration: 1
+  average_rating: 1.5
+  total_reviews: 1
+  provides_certificate: false
+  status: 1
+
+two:
+  title: MyString
+  content_link: MyString
+  price: 9.99
+  instructor: two
+  description: MyText
+  image_url: MyString
+  duration: 1
+  average_rating: 1.5
+  total_reviews: 1
+  provides_certificate: false
+  status: 1
