@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_07_184123) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_07_191741) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "course_tags", force: :cascade do |t|
     t.integer "course_id", null: false
     t.integer "tag_id", null: false
@@ -41,7 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_184123) do
     t.integer "student_id", null: false
     t.integer "course_id", null: false
     t.boolean "is_active"
-    t.float "completion_percentage"
+    t.boolean "is_completed", default: false
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -66,11 +69,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_184123) do
     t.datetime "updated_at", null: false
   end
 
-add_foreign_key "course_tags", "courses"
-add_foreign_key "course_tags", "tags"
-add_foreign_key "courses", "users", column: "instructor_id"
-add_foreign_key "enrollments", "courses"
-add_foreign_key "enrollments", "users", column: "student_id"
-
-  
+  add_foreign_key "course_tags", "courses"
+  add_foreign_key "course_tags", "tags"
+  add_foreign_key "courses", "users", column: "instructor_id"
+  add_foreign_key "enrollments", "courses"
+  add_foreign_key "enrollments", "users", column: "student_id"
 end
