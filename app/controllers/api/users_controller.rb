@@ -1,4 +1,6 @@
-class UsersController < ApplicationController
+module Api
+
+  class UsersController < ApplicationController
     wrap_parameters format: []
     skip_before_action :authorize, only: :create
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
@@ -44,7 +46,8 @@ class UsersController < ApplicationController
       render json: { errors: invalid.record.errors }, status: :unprocessable_entity
     end
   
-    def user_params
-      params.permit(:username, :email, :password)
-    end
+   def user_params
+    params.require(:user).permit(:username, :email, :password, :role)
   end
+  end
+end

@@ -1,4 +1,5 @@
-class CoursesController < ApplicationController
+module Api
+  class CoursesController < ApplicationController
     before_action :set_course, only: [:show, :edit, :update, :destroy]
 
     def index
@@ -41,4 +42,5 @@ class CoursesController < ApplicationController
     def course_params
       params.require(:course).permit(:title, :content_link, :price, :description, :author_id, :image_url, :duration ) # and other fields
     end
+end
 end

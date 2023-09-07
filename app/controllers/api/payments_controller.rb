@@ -1,4 +1,4 @@
-class PaymentsController < ApplicationController
+class Api::PaymentsController < ApplicationController
 
     YOUR_DOMAIN = Rails.env.development? ? 'http://localhost:3001' : 'YOUR_PRODUCTION_DOMAIN'
 

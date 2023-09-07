@@ -1,4 +1,5 @@
-class CourseTagsController < ApplicationController
+module Api
+  class CourseTagsController < ApplicationController
     def create
       @course_tag = CourseTag.new(course_tag_params)
       if @course_tag.save
@@ -21,3 +22,4 @@ class CourseTagsController < ApplicationController
     end
   end
   
+end
