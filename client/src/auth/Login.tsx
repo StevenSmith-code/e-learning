@@ -6,13 +6,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+import { useMutation } from "@tanstack/react-query";
+import { postLoginForm } from "@/api";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 const formSchema = z.object({
   username: z
     .string()
@@ -27,6 +30,7 @@ const formSchema = z.object({
 });
 
 export function Login() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,8 +39,13 @@ export function Login() {
     },
   });
 
+  const loginMutation = useMutation({
+    mutationFn: postLoginForm,
+  });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    loginMutation.mutate(values);
+    console.log(loginMutation.data.id);
+    loginMutation.isSuccess && navigate(`/users/${loginMutation.data.id}`);
   }
 
   return (
@@ -60,7 +69,11 @@ export function Login() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Username" {...field} />
+                    {loginMutation.isLoading ? (
+                      <Skeleton className="h-4 w-[250px]" />
+                    ) : (
+                      <Input placeholder="Username" {...field} />
+                    )}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -73,13 +86,27 @@ export function Login() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    {loginMutation.isLoading ? (
+                      <Skeleton className="h-4 w-[250px]" />
+                    ) : (
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
+                    )}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            {loginMutation.isLoading ? (
+              <Button>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              </Button>
+            ) : (
+              <Button type="submit">Submit</Button>
+            )}
           </form>
         </Form>
       </div>
