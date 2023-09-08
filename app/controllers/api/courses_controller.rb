@@ -4,7 +4,8 @@ module Api
 
     def index
         @courses = Course.all
-        render json: @courses
+        render json: @course, serializer: CourseSerializer, scope: current_user
+
       end
     
       def show
