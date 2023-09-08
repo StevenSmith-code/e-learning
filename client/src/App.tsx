@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getUsers } from "./api";
 
-import Login from "./Login";
+import { useEffect } from "react";
+
+type UserType = {
+  id: number;
+  username: string;
+  email: string;
+  enrollments: [];
+  courses: [];
+};
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [isToggled, setIsToggled] = useState(false);
-
   return <></>;
 }
 
