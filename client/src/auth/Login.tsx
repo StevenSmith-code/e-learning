@@ -16,6 +16,7 @@ import { postLoginForm } from "@/api";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/context/UserContext";
 const formSchema = z.object({
   username: z
     .string()
@@ -31,6 +32,7 @@ const formSchema = z.object({
 
 export function Login() {
   const navigate = useNavigate();
+  const { setUser } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,8 +46,11 @@ export function Login() {
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
     loginMutation.mutate(values);
-    console.log(loginMutation.data.id);
-    loginMutation.isSuccess && navigate(`/users/${loginMutation.data.id}`);
+    if (loginMutation.isSuccess) {
+      console.log(loginMutation.data.id);
+      setUser(loginMutation.data.id);
+      navigate(`/users/${loginMutation.data.id}/profile`);
+    }
   }
 
   return (
@@ -55,13 +60,16 @@ export function Login() {
           Learn Web-development the Easy Way
         </h1>
         <p className="leading-7 [&:not(:first-child)]:mt-6 text-white">
-          Login to look at courses made by me to help you kickstart your journey
-          into Web-development!
+          Login or create an account to look at courses made by me to help you
+          kickstart your journey into Web-development!
         </p>
       </div>
       <div className="flex m-auto items-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 min-w-[450px]"
+          >
             <FormField
               control={form.control}
               name="username"
@@ -100,13 +108,18 @@ export function Login() {
                 </FormItem>
               )}
             />
-            {loginMutation.isLoading ? (
-              <Button>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <div className="flex justify-between">
+              {loginMutation.isLoading ? (
+                <Button>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                </Button>
+              ) : (
+                <Button type="submit">Login</Button>
+              )}
+              <Button type="button" onClick={() => navigate("/signup")}>
+                Don't have an account?
               </Button>
-            ) : (
-              <Button type="submit">Submit</Button>
-            )}
+            </div>
           </form>
         </Form>
       </div>

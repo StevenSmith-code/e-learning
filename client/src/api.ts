@@ -69,6 +69,23 @@ export async function postLoginForm(formdata: LoginUserType) {
   }
 }
 
+export async function postSignupForm(formdata: LoginUserType) {
+  try {
+    const response = await axios.post("/api/users", formdata);
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage =
+        typeof error.response?.data === "object"
+          ? JSON.stringify(error.response?.data)
+          : error.response?.data || "Error fetching user data";
+      throw new Error(errorMessage);
+    } else {
+      throw new Error("Error fetching user data");
+    }
+  }
+}
+
 export const useUsersQuery = () => {
   return useQuery<Array<UserType>>({
     queryKey: ["users"],
