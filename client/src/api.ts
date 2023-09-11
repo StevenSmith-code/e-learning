@@ -84,6 +84,23 @@ export async function postSignupForm(formdata: LoginUserType) {
   }
 }
 
+export async function logoutUser(userId: number) {
+  try {
+    const response = await axios.delete(`/api/users/${userId}`);
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage =
+        typeof error.response?.data === "object"
+          ? JSON.stringify(error.response?.data)
+          : error.response?.data || "Error fetching user data";
+      throw new Error(errorMessage);
+    } else {
+      throw new Error("Error fetching user data");
+    }
+  }
+}
+
 export const useUserQuery = () => {
   return useQuery<Array<UserType>>({
     queryKey: ["users"],
