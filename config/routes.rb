@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :enrollments
   post "/login", to:"sessions#create"
   post "/create-checkout-session", to: "payments#create_checkout_session"
+  get "/user", to: "users#show"
   end
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

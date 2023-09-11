@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 
 type UserType = {
   id: number;
@@ -33,10 +32,9 @@ export async function getUsers(): Promise<UserType[]> {
   }
 }
 
-export async function getUser(): Promise<UserType[]> {
-  let { userId } = useParams();
+export async function getUser(): Promise<UserType> {
   try {
-    const response = await axios.get(`/api/users/${userId}`);
+    const response = await axios.get(`/api/user`);
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
@@ -86,7 +84,7 @@ export async function postSignupForm(formdata: LoginUserType) {
   }
 }
 
-export const useUsersQuery = () => {
+export const useUserQuery = () => {
   return useQuery<Array<UserType>>({
     queryKey: ["users"],
     queryFn: getUsers,
@@ -94,8 +92,8 @@ export const useUsersQuery = () => {
 };
 
 export const useLoginQuery = () => {
-  return useQuery<Array<UserType>>({
+  return useQuery<UserType>({
     queryKey: ["user"],
-    queryFn: getUsers,
+    queryFn: getUser,
   });
 };

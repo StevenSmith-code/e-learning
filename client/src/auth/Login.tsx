@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/context/UserContext";
+import { useEffect } from "react";
 const formSchema = z.object({
   username: z
     .string()
@@ -32,7 +33,7 @@ const formSchema = z.object({
 
 export function Login() {
   const navigate = useNavigate();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,15 +44,20 @@ export function Login() {
 
   const loginMutation = useMutation({
     mutationFn: postLoginForm,
+    onSuccess: (data) => {
+      navigate(`/users/${data.id}/profile`);
+    },
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     loginMutation.mutate(values);
-    if (loginMutation.isSuccess) {
-      console.log(loginMutation.data.id);
-      setUser(loginMutation.data.id);
-      navigate(`/users/${loginMutation.data.id}/profile`);
-    }
   }
+
+  useEffect(() => {
+    if (user && user.id) {
+      navigate(`/users/${user.id}/profile`);
+    }
+  }, []);
 
   return (
     <div className="flex">

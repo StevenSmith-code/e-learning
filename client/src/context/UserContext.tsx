@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState } from "react";
 
 type User = {
   id: number;
+  username: string;
+  email: string;
+  enrollments: [];
+  courses: [];
 };
 
 type UserContextType = {
