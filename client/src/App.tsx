@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import Dashboard from "./dashboard/DashboardLayout";
+import DashboardLayout from "./dashboard/DashboardLayout";
 import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 import ProtectedRouteIsLoggedin from "./ProtectedRouteIsLoggedin";
@@ -22,11 +22,28 @@ function App() {
         <Route
           path="/"
           element={
-            <Dashboard>
-              <div>Test</div>
-            </Dashboard>
+            <DashboardLayout>
+              <div>test</div>
+            </DashboardLayout>
           }
         />
+        <Route
+          path="/search"
+          element={
+            <DashboardLayout>
+              <p>search</p>
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <DashboardLayout>
+              <p>settings</p>
+            </DashboardLayout>
+          }
+        />
+
         <Route
           path="/login"
           element={

@@ -20,14 +20,13 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
 }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-
   const isActive =
     (pathname === "/" && href === "/") ||
     pathname === href ||
     pathname?.startsWith(`${href}/`);
 
   const IconComponent = isActive && activeIcon ? activeIcon : icon;
-
+  const IconToRender = IconComponent as React.ComponentType<any>;
   const onClick = () => {
     navigate(href);
   };
@@ -43,8 +42,9 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
       )}
     >
       <div className="flex items-center gap-x-2 py-4">
-        <IconComponent
+        <IconToRender
           size={22}
+          color={isActive ? "#0369c7" : undefined}
           className={cn(
             "text-slate-500",
             isActive && "text-sky-700 animate-spin-once"

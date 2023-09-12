@@ -34,12 +34,12 @@ export const SearchInput = () => {
   }, [debouncedValue, currentCategory, navigate, pathname]);
 
   return (
-    <div className="relative">
-      <Search className="absolute top-3 left-3 text-slate-600" />
+    <div className="relative ml-10">
+      <Search className="absolute top-2 left-2 text-slate-600" />
       <Input
         onChange={(e) => setValue(e.target.value)}
         value={value}
-        className="w-[300px] pl-9 rounded-full bg-slate-100 focus-visible:ring-slate-200"
+        className="w-[300px] mt-5 pl-9 rounded-full bg-slate-100 focus-visible:ring-slate-200"
         placeholder="Search for a course"
       />
     </div>

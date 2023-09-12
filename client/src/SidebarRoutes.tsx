@@ -1,7 +1,6 @@
-import { Cog, Compass, Layout, List } from "lucide-react";
+import { Cog, Compass, Layout, List, ShoppingCart } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import SidebarItem from "./SidebarItem";
-
 const guestRoutes = [
   {
     icon: Layout,
@@ -16,10 +15,10 @@ const guestRoutes = [
     activeIcon: Compass,
   },
   {
-    icon: Cog,
-    label: "Settings",
+    icon: ShoppingCart,
+    label: "Cart",
     href: "/cart",
-    activeIcon: Cog,
+    activeIcon: ShoppingCart,
   },
 ];
 

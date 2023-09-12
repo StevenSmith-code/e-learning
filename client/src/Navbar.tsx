@@ -23,7 +23,11 @@ function Navbar() {
   return (
     <>
       {isSearchPage && <SearchInput />}
-      <div className="flex gap-x-2 ml-auto">
+      <div
+        className={`flex gap-x-2 justify-end mr-10 ${
+          isSearchPage ? "-mt-10" : "mt-5"
+        }`}
+      >
         {isTeacher ? (
           <Button onClick={() => navigate("/")} size="sm" variant="ghost">
             <LogOut className="h-4 w-4 mr-2" />
