@@ -4,7 +4,6 @@ import { LogOut } from "lucide-react";
 import { SearchInput } from "./SearchInput";
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "./api";
-import { useUser } from "./context/UserContext";
 
 function Navbar() {
   const logoutMutation = useMutation({
@@ -13,7 +12,6 @@ function Navbar() {
       navigate(`/`);
     },
   });
-  const { user } = useUser();
   const matchSearchPage = useMatch("/search");
   const matchTeacher = useMatch("/teacher/*");
 
@@ -40,7 +38,14 @@ function Navbar() {
             Teacher mode
           </Button>
         )}
-        <Button onClick={() => logoutMutation.mutate(user?.id || 0)} />
+        <Button
+          variant={"destructive"}
+          onClick={() => {
+            logoutMutation.mutate();
+          }}
+        >
+          Logout
+        </Button>
       </div>
     </>
   );

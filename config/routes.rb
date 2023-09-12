@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post "/login", to:"sessions#create"
   post "/create-checkout-session", to: "payments#create_checkout_session"
   get "/user", to: "users#show"
+  delete "/logout", to: "sessions#destroy"
   end
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

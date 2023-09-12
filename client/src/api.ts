@@ -84,9 +84,9 @@ export async function postSignupForm(formdata: LoginUserType) {
   }
 }
 
-export async function logoutUser(userId: number) {
+export async function logoutUser() {
   try {
-    const response = await axios.delete(`/api/users/${userId}`);
+    const response = await axios.delete(`/api/logout`);
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {

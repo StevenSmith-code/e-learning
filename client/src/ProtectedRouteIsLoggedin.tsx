@@ -10,7 +10,10 @@ type ProtectedRouteProps = {
   children: ReactNode;
 };
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ user, children }) => {
+const ProtectedRouteIsLoggedin: React.FC<ProtectedRouteProps> = ({
+  user,
+  children,
+}) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (user) {
@@ -24,4 +27,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ user, children }) => {
   return <>{children}</>;
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteIsLoggedin;

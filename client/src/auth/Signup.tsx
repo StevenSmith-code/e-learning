@@ -41,6 +41,11 @@ function Signup() {
   const { setUser } = useUser();
   const signupMutation = useMutation({
     mutationFn: postSignupForm,
+    onSuccess: (data) => {
+      navigate(`/users/${data.id}/profile`);
+      setUser(signupMutation.data.id);
+      navigate(`/users/${signupMutation.data.id}/profile`);
+    },
   });
   useEffect(() => {
     if (signupMutation.isError) {
@@ -86,18 +91,13 @@ function Signup() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      email: "john@doe.com",
+      email: "",
       password: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     signupMutation.mutate(values);
-    if (signupMutation.isSuccess) {
-      console.log(signupMutation.data.id);
-      setUser(signupMutation.data.id);
-      navigate(`/users/${signupMutation.data.id}/profile`);
-    }
   }
   return (
     <section className="flex">
