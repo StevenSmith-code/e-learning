@@ -1,6 +1,6 @@
 # app/controllers/api/tags_controller.rb
-
-class Api::TagsController < ApplicationController
+module Api
+class TagsController < ApplicationController
     before_action :set_tag, only: [:show, :update, :destroy]
     skip_before_action :authorize, only: :create
   
@@ -50,4 +50,4 @@ class Api::TagsController < ApplicationController
       params.require(:tag).permit(:name)
     end
   end
-  
+end

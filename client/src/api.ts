@@ -9,6 +9,10 @@ type UserType = {
   courses: [];
 };
 
+type CategoriesType = {
+  id: number;
+  name: string;
+};
 type LoginUserType = {
   username: string;
   password: string;
@@ -35,6 +39,24 @@ export async function getUsers(): Promise<UserType[]> {
 export async function getUser(): Promise<UserType> {
   try {
     const response = await axios.get(`/api/user`);
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      // Check if the error response data is an object and stringify it if it is.
+      const errorMessage =
+        typeof error.response?.data === "object"
+          ? JSON.stringify(error.response?.data)
+          : error.response?.data || "Error fetching user data";
+      throw new Error(errorMessage);
+    } else {
+      throw new Error("Error fetching user data");
+    }
+  }
+}
+
+export async function getCategories(): Promise<CategoriesType[]> {
+  try {
+    const response = await axios.get(`/api/tags`);
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
@@ -105,6 +127,13 @@ export const useUserQuery = () => {
   return useQuery<Array<UserType>>({
     queryKey: ["users"],
     queryFn: getUsers,
+  });
+};
+
+export const useTagsQuery = () => {
+  return useQuery<Array<CategoriesType>>({
+    queryKey: ["tags"],
+    queryFn: getCategories,
   });
 };
 

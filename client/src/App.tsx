@@ -7,6 +7,8 @@ import ProtectedRouteIsLoggedin from "./ProtectedRouteIsLoggedin";
 import { useUser } from "./context/UserContext";
 import { useLoginQuery } from "./api";
 import { useEffect } from "react";
+import Dashboard from "./dashboard/Dashboard";
+import Browse from "./browse/Browse";
 
 function App() {
   const { user, setUser } = useUser();
@@ -23,7 +25,7 @@ function App() {
           path="/"
           element={
             <DashboardLayout>
-              <div>test</div>
+              <Dashboard />
             </DashboardLayout>
           }
         />
@@ -31,7 +33,7 @@ function App() {
           path="/search"
           element={
             <DashboardLayout>
-              <p>search</p>
+              <Browse />
             </DashboardLayout>
           }
         />

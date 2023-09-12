@@ -34,7 +34,7 @@ export const SearchInput = () => {
   }, [debouncedValue, currentCategory, navigate, pathname]);
 
   return (
-    <div className="relative ml-10">
+    <div className="relative ml-16">
       <Search className="absolute top-2 left-2 text-slate-600" />
       <Input
         onChange={(e) => setValue(e.target.value)}
