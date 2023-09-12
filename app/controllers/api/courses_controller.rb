@@ -3,10 +3,10 @@ module Api
     before_action :set_course, only: [:show, :edit, :update, :destroy]
 
     def index
-        @courses = Course.all
-        render json: @course, serializer: CourseSerializer, scope: current_user
-
-      end
+      @courses = Course.all
+      render json: @courses, each_serializer: CourseSerializer
+    end
+    
     
       def show
         render json: @course

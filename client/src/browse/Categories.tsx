@@ -17,6 +17,10 @@ type CategoryDetail = {
 function Categories() {
   const { data, isLoading, isError, isSuccess } = useTagsQuery();
   const CATEGORY_DETAILS: Record<string, CategoryDetail> = {
+    all: {
+      label: "All",
+      icon: Flame,
+    },
     "Web Development": {
       label: "Web Development",
       icon: Code2,
@@ -47,7 +51,7 @@ function Categories() {
           key={category.id}
           label={category.label}
           icon={category.icon}
-          value={category.name}
+          value={category.label}
         />
       ))}
     </div>
