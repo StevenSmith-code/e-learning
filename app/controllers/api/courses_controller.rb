@@ -33,6 +33,12 @@ module Api
         @course.destroy
         render json: { message: 'Course was successfully destroyed.' }
       end
+
+      def user_courses
+        @user = User.find(params[:user_id])
+        @courses = @user.courses
+        render json: @courses
+      end
   
     private
   

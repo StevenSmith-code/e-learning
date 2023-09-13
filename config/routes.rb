@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
-    resources :users
+    resources :users do
+      get 'courses', to: "courses#user_courses"
+    end
   resources :courses
   resources :tags
   resources :enrollments

@@ -22,6 +22,8 @@ type CoursesType = {
   img_url: string;
   price: number;
   duration: number;
+  created_at: string;
+  updated_at: string;
 };
 
 type LoginUserType = {
@@ -86,6 +88,24 @@ export async function getCategories(): Promise<CategoriesType[]> {
 export async function getCourses(): Promise<CoursesType[]> {
   try {
     const response = await axios.get(`/api/courses`);
+    return response.data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      // Check if the error response data is an object and stringify it if it is.
+      const errorMessage =
+        typeof error.response?.data === "object"
+          ? JSON.stringify(error.response?.data)
+          : error.response?.data || "Error fetching user data";
+      throw new Error(errorMessage);
+    } else {
+      throw new Error("Error fetching user data");
+    }
+  }
+}
+
+export async function getUserCourses(userId: number): Promise<CoursesType[]> {
+  try {
+    const response = await axios.get(`/api/users/${userId}/courses`);
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
@@ -172,7 +192,6 @@ export const useCourseQuery = () => {
     queryFn: getCourses,
   });
 };
-
 export const useLoginQuery = () => {
   return useQuery<UserType>({
     queryKey: ["user"],

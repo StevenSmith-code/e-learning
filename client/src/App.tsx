@@ -9,6 +9,7 @@ import { useLoginQuery } from "./api";
 import { useEffect } from "react";
 import Dashboard from "./dashboard/Dashboard";
 import Browse from "./browse/Browse";
+import CourseLayout from "./dashboard/teacher/CourseLayout";
 
 function App() {
   const { user, setUser } = useUser();
@@ -39,6 +40,22 @@ function App() {
         />
         <Route
           path="/cart"
+          element={
+            <DashboardLayout>
+              <p>settings</p>
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/teacher/courses/*"
+          element={
+            <DashboardLayout>
+              <CourseLayout />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/teacher/settings"
           element={
             <DashboardLayout>
               <p>settings</p>

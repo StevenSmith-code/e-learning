@@ -1,6 +1,5 @@
 import { formatPrice } from "@/lib/format";
 import { BookOpen, Clock } from "lucide-react";
-import React from "react";
 import { Link } from "react-router-dom";
 
 interface CourseCardProps {
