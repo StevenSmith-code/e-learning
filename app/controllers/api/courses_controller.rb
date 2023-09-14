@@ -47,7 +47,7 @@ module Api
     end
   
     def course_params
-      params.require(:course).permit(:title, :content_link, :price, :description, :author_id, :image_url, :duration ) # and other fields
+      params.require(:course).permit(:title, :content_link, :price, :description, :author_id, :image_url, :duration, :instructor_id)
     end
 end
 end

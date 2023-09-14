@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import Dashboard from "./dashboard/Dashboard";
 import Browse from "./browse/Browse";
 import CourseLayout from "./dashboard/teacher/CourseLayout";
+import CreateCourse from "./dashboard/teacher/create/CreateCourse";
+import CourseIdLayout from "./dashboard/teacher/courses/CourseIdLayout";
 
 function App() {
   const { user, setUser } = useUser();
@@ -47,10 +49,26 @@ function App() {
           }
         />
         <Route
-          path="/teacher/courses/*"
+          path="/teacher/courses/"
           element={
             <DashboardLayout>
               <CourseLayout />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/teacher/courses/:courseId"
+          element={
+            <DashboardLayout>
+              <CourseIdLayout />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/teacher/create"
+          element={
+            <DashboardLayout>
+              <CreateCourse />
             </DashboardLayout>
           }
         />
