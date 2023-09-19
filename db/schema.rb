@@ -10,99 +10,81 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_14_002025) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_19_160941) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
-    t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
-  end
-
-  create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.string "service_name", null: false
-    t.bigint "byte_size", null: false
-    t.string "checksum"
-    t.datetime "created_at", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
-  create_table "active_storage_variant_records", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
-  end
-
-  create_table "course_tags", force: :cascade do |t|
-    t.integer "course_id", null: false
-    t.integer "tag_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["course_id"], name: "index_course_tags_on_course_id"
-    t.index ["tag_id"], name: "index_course_tags_on_tag_id"
-  end
-
-  create_table "courses", force: :cascade do |t|
-    t.string "title"
-    t.string "content_link"
-    t.decimal "price", precision: 8, scale: 2
-    t.integer "instructor_id", null: false
-    t.text "description"
-    t.string "image_url"
-    t.integer "duration"
-    t.float "average_rating"
-    t.integer "total_reviews"
-    t.boolean "provides_certificate"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "is_published", default: false
-    t.index ["instructor_id"], name: "index_courses_on_instructor_id"
-  end
-
-  create_table "enrollments", force: :cascade do |t|
-    t.integer "student_id", null: false
-    t.integer "course_id", null: false
-    t.boolean "is_active"
-    t.boolean "is_completed", default: false
-    t.datetime "completed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["course_id"], name: "index_enrollments_on_course_id"
-    t.index ["student_id"], name: "index_enrollments_on_student_id"
-  end
-
-  create_table "tags", force: :cascade do |t|
+  enable_extension "pgcrypto" if adapter_name == "PostgreSQL" # UUID support for PostgreSQL
+  
+  create_table "attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text "url"
+    t.uuid "course_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.index ["course_id"], name: "index_attachments_on_course_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "username"
-    t.string "email"
-    t.string "password_digest"
-    t.integer "role"
-    t.string "avatar"
-    t.text "bio"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "confirmation_password"
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "course_tags", "courses"
-  add_foreign_key "course_tags", "tags"
-  add_foreign_key "courses", "users", column: "instructor_id"
-  add_foreign_key "enrollments", "courses"
-  add_foreign_key "enrollments", "users", column: "student_id"
+  create_table "chapters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.text "video_url"
+    t.integer "position"
+    t.boolean "is_published", default: false
+    t.boolean "is_free", default: false
+    t.uuid "course_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.index ["course_id"], name: "index_chapters_on_course_id"
+  end
+
+  create_table "courses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.text "title"
+    t.text "description"
+    t.text "image_url"
+    t.float "price"
+    t.boolean "is_published", default: false
+    t.uuid "category_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.index ["category_id"], name: "index_courses_on_category_id"
+  end
+
+  create_table "mux_datas", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "asset_id"
+    t.string "playback_id"
+    t.uuid "chapter_id"
+    t.index ["chapter_id"], name: "index_mux_datas_on_chapter_id"
+  end
+
+  create_table "purchases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.uuid "course_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.index ["course_id"], name: "index_purchases_on_course_id"
+    t.index ["user_id", "course_id"], name: "index_purchases_on_user_id_and_course_id", unique: true
+  end
+
+  create_table "stripe_customers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_id"
+    t.string "stripe_customer_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+  end
+
+  create_table "user_progresses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.uuid "chapter_id"
+    t.boolean "is_completed", default: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.index ["chapter_id"], name: "index_user_progresses_on_chapter_id"
+    t.index ["user_id", "chapter_id"], name: "index_user_progresses_on_user_id_and_chapter_id", unique: true
+  end
+
 end

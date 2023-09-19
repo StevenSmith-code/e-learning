@@ -1,7 +1,6 @@
 class Course < ApplicationRecord
-  belongs_to :instructor, class_name: 'User'
-  has_many :enrollments
-  has_many :students, through: :enrollments, source: :student
-  has_one_attached :image_url
-
+  belongs_to :category, optional: true
+  has_many :chapters, dependent: :destroy
+  has_many :attachments, dependent: :destroy
+  has_many :purchases, dependent: :destroy
 end
