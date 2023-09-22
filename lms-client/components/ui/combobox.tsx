@@ -23,6 +23,7 @@ interface ComboboxProps {
   value?: string;
   onChange: (value: string) => void;
 }
+
 export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
   const [open, setOpen] = React.useState(false);
 
@@ -33,34 +34,34 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-full justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
+            ? options.find((option) => option.value === value)?.label
+            : "Select option..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandEmpty>No framework found.</CommandEmpty>
+          <CommandInput placeholder="Search option..." />
+          <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
-            {frameworks.map((framework) => (
+            {options.map((option) => (
               <CommandItem
-                key={framework.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
+                key={option.value}
+                onSelect={() => {
+                  onChange(option.value === value ? "" : option.value);
                   setOpen(false);
                 }}
               >
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === framework.value ? "opacity-100" : "opacity-0"
+                    value === option.value ? "opacity-100" : "opacity-0"
                   )}
                 />
-                {framework.label}
+                {option.label}
               </CommandItem>
             ))}
           </CommandGroup>
