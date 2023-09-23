@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Loader2, Pencil, PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -19,8 +19,8 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+
 import { ChaptersList } from "./chapters-list";
 
 interface ChaptersFormProps {
@@ -36,7 +36,9 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const toggleCreating = () => setIsCreating((current) => !current);
+  const toggleCreating = () => {
+    setIsCreating((current) => !current);
+  };
 
   const router = useRouter();
 
@@ -81,10 +83,10 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   };
 
   return (
-    <div className=" absolute mt-6 border bg-slate-100 rounded-md p-4">
+    <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
       {isUpdating && (
-        <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-md flex items-center justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-sky-700" />
+        <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-m flex items-center justify-center">
+          <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
         </div>
       )}
       <div className="font-medium flex items-center justify-between">
@@ -100,7 +102,6 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           )}
         </Button>
       </div>
-
       {isCreating && (
         <Form {...form}>
           <form
@@ -123,7 +124,6 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
                 </FormItem>
               )}
             />
-
             <Button disabled={!isValid || isSubmitting} type="submit">
               Create
             </Button>
