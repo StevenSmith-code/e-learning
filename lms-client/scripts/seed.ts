@@ -13,10 +13,10 @@ async function main() {
         { name: "Accounting" },
         { name: "Engineering" },
         { name: "Filming" },
-      ],
+      ]
     });
 
-    console.log("success");
+    console.log("Success");
   } catch (error) {
     console.log("Error seeding the database categories", error);
   } finally {

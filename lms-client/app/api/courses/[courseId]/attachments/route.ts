@@ -1,6 +1,7 @@
-import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+
+import { db } from "@/lib/db";
 
 export async function POST(
   req: Request,
@@ -18,11 +19,11 @@ export async function POST(
       where: {
         id: params.courseId,
         userId: userId,
-      },
+      }
     });
 
     if (!courseOwner) {
-      return new NextResponse("Unauthourized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const attachment = await db.attachment.create({
@@ -30,7 +31,7 @@ export async function POST(
         url,
         name: url.split("/").pop(),
         courseId: params.courseId,
-      },
+      }
     });
 
     return NextResponse.json(attachment);

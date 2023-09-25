@@ -19,20 +19,22 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/format";
 
 interface PriceFormProps {
   initialData: Course;
   courseId: string;
-}
+};
 
 const formSchema = z.object({
   price: z.coerce.number(),
 });
 
-export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
+export const PriceForm = ({
+  initialData,
+  courseId
+}: PriceFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -57,7 +59,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
     } catch {
       toast.error("Something went wrong");
     }
-  };
+  }
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -75,13 +77,14 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
         </Button>
       </div>
       {!isEditing && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !initialData.price && "text-slate-500 italic"
-          )}
-        >
-          {initialData.price ? formatPrice(initialData.price) : "No price"}
+        <p className={cn(
+          "text-sm mt-2",
+          !initialData.price && "text-slate-500 italic"
+        )}>
+          {initialData.price
+            ? formatPrice(initialData.price)
+            : "No price"
+          }
         </p>
       )}
       {isEditing && (
@@ -97,9 +100,9 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                      disabled={isSubmitting}
                       type="number"
-                      step={"0.01"}
+                      step="0.01"
+                      disabled={isSubmitting}
                       placeholder="Set a price for your course"
                       {...field}
                     />
@@ -109,7 +112,10 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button
+                disabled={!isValid || isSubmitting}
+                type="submit"
+              >
                 Save
               </Button>
             </div>
@@ -117,5 +123,5 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
         </Form>
       )}
     </div>
-  );
-};
+  )
+}

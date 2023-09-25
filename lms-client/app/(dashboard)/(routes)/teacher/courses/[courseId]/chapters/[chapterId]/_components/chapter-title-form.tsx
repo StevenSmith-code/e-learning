@@ -25,7 +25,7 @@ interface ChapterTitleFormProps {
   };
   courseId: string;
   chapterId: string;
-}
+};
 
 const formSchema = z.object({
   title: z.string().min(1),
@@ -51,17 +51,14 @@ export const ChapterTitleForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}`,
-        values
-      );
+      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`, values);
       toast.success("Chapter updated");
       toggleEdit();
       router.refresh();
     } catch {
       toast.error("Something went wrong");
     }
-  };
+  }
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -78,7 +75,11 @@ export const ChapterTitleForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && (
+        <p className="text-sm mt-2">
+          {initialData.title}
+        </p>
+      )}
       {isEditing && (
         <Form {...form}>
           <form
@@ -102,7 +103,10 @@ export const ChapterTitleForm = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button
+                disabled={!isValid || isSubmitting}
+                type="submit"
+              >
                 Save
               </Button>
             </div>
@@ -110,5 +114,5 @@ export const ChapterTitleForm = ({
         </Form>
       )}
     </div>
-  );
-};
+  )
+}
