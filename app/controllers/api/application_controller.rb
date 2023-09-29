@@ -1,6 +1,9 @@
 module Api
+
+    require "clerk/authenticatable"
+
 class ApplicationController < ActionController::API
-    include ActionController::Cookies
+    include Clerk::Authenticatable
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
 
     before_action :authorize
@@ -8,7 +11,7 @@ class ApplicationController < ActionController::API
     private
 
     def authorize
-        render json: { errors: ["Not authorized"] }, status: :unauthorized unless session.include? :user_id
+        render json: { errors: ["Not authorized"] }, status: :unauthorized unless clerk_session
       end
 
     def render_unprocessable_entity_response(exception)
