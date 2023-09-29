@@ -161,10 +161,6 @@ module Api
       render json: { error: 'Unauthorized' }, status: :unauthorized unless is_teacher?(clerk_user)
     end
   
-    def course_params
-      params.require(:course).permit(:title)
-    end
-  
     def is_teacher?(user)
       user.id.to_s == ENV['RAILS_TEACHER_ID']
     end

@@ -75,6 +75,10 @@ GEM
     builder (3.2.4)
     case_transform (0.2)
       activesupport
+    clerk-sdk-ruby (2.10.0)
+      concurrent-ruby (~> 1.1)
+      faraday (~> 1.4.1)
+      jwt (~> 2.5)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.3)
@@ -84,6 +88,19 @@ GEM
     erubi (1.12.0)
     faker (3.2.1)
       i18n (>= 1.8.11, < 2)
+    faraday (1.4.3)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
+      faraday-excon (~> 1.1)
+      faraday-net_http (~> 1.0)
+      faraday-net_http_persistent (~> 1.1)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
+    faraday-excon (1.1.0)
+    faraday-net_http (1.0.1)
+    faraday-net_http_persistent (1.2.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.1)
@@ -93,6 +110,7 @@ GEM
       rdoc
       reline (>= 0.3.8)
     jsonapi-renderer (0.2.2)
+    jwt (2.7.1)
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -105,6 +123,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.5)
     minitest (5.20.0)
+    multipart-post (2.3.0)
     net-imap (0.3.7)
       date
       net-protocol
@@ -161,6 +180,7 @@ GEM
       psych (>= 4.0.0)
     reline (0.3.8)
       io-console (~> 0.5)
+    ruby2_keywords (0.0.5)
     stringio (3.0.8)
     stripe (9.2.0)
     thor (1.2.2)
@@ -178,6 +198,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers
   bcrypt (~> 3.1.7)
+  clerk-sdk-ruby
   debug
   faker
   pg
