@@ -123,6 +123,18 @@ class ChaptersController < ApplicationController
         end
       end
   
+      def reorder
+        ActiveRecord::Base.transaction do
+          params[:list].each do |item|
+            chapter = @course.chapters.find(item[:id])
+            chapter.update!(position: item[:position])
+          end
+        end
+    
+        render json: { message: 'Success' }, status: :ok
+      rescue => e
+        render json: { error: 'Internal Error', detail: e.message }, status: :internal_server_error
+      end
     private
   
     def authenticate_user!

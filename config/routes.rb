@@ -1,19 +1,23 @@
+# config/routes.rb
 Rails.application.routes.draw do
-  namespace :api do
-    resources :users do
-      get 'courses', to: "courses#user_courses"
+  namespace :api, defaults: { format: :json } do
+    post 'webhook', to: 'webhooks#create'
+    
+    resources :courses, only: [:index, :show, :create, :update, :destroy] do
+      member do
+        post 'checkout'
+        post 'publish'
+        post 'unpublish'
+        resources :attachments, only: [:index, :create, :show, :update, :destroy]
+        resources :chapters, only: [:index, :create, :show, :update, :destroy] do
+          member do
+            post 'publish'
+            post 'unpublish'
+            post 'progress'
+            put 'reorder', on: :collection
+          end
+        end
+      end
     end
-  resources :courses
-  resources :tags
-  resources :enrollments
-  post "/login", to:"sessions#create"
-  post "/create-checkout-session", to: "payments#create_checkout_session"
-  get "/user", to: "users#show"
-  delete "/logout", to: "sessions#destroy"
   end
-    # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
- 
 end
