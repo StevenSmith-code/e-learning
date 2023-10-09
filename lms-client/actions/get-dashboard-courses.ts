@@ -1,20 +1,25 @@
-import { Category, Chapter, Course } from "@prisma/client";
+import { Tag, Chapter, Course } from "@prisma/client";
 
 import { db } from "@/lib/db";
 import { getProgress } from "@/actions/get-progress";
 
-type CourseWithProgressWithCategory = Course & {
-  category: Category;
-  chapters: Chapter[];
+type CourseWithProgressWithTags = Course & {
+  tags: ({ tag: { id: string; name: string } } & {
+    courseId: string;
+    tagId: string;
+  })[];
+  chapters: { id: string }[];
   progress: number | null;
 };
 
 type DashboardCourses = {
-  completedCourses: CourseWithProgressWithCategory[];
-  coursesInProgress: CourseWithProgressWithCategory[];
-}
+  completedCourses: CourseWithProgressWithTags[];
+  coursesInProgress: CourseWithProgressWithTags[];
+};
 
-export const getDashboardCourses = async (userId: string): Promise<DashboardCourses> => {
+export const getDashboardCourses = async (
+  userId: string
+): Promise<DashboardCourses> => {
   try {
     const purchasedCourses = await db.purchase.findMany({
       where: {
@@ -23,36 +28,56 @@ export const getDashboardCourses = async (userId: string): Promise<DashboardCour
       select: {
         course: {
           include: {
-            category: true,
+            tags: {
+              select: {
+                tag: true, // Fetch related Tag objects
+              },
+            },
             chapters: {
               where: {
                 isPublished: true,
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     });
 
-    const courses = purchasedCourses.map((purchase) => purchase.course) as CourseWithProgressWithCategory[];
+    const courses: CourseWithProgressWithTags[] = purchasedCourses.map(
+      (purchase) => {
+        return {
+          ...purchase.course,
+          tags: purchase.course.tags.map((t) => ({
+            tag: t.tag,
+            courseId: purchase.course.id,
+            tagId: t.tag.id,
+          })),
+          progress: null,
+        };
+      }
+    );
 
     for (let course of courses) {
       const progress = await getProgress(userId, course.id);
-      course["progress"] = progress;
+      course.progress = progress;
     }
 
-    const completedCourses = courses.filter((course) => course.progress === 100);
-    const coursesInProgress = courses.filter((course) => (course.progress ?? 0) < 100);
+    const completedCourses = courses.filter(
+      (course) => course.progress === 100
+    );
+    const coursesInProgress = courses.filter(
+      (course) => (course.progress ?? 0) < 100
+    );
 
     return {
       completedCourses,
       coursesInProgress,
-    }
+    };
   } catch (error) {
     console.log("[GET_DASHBOARD_COURSES]", error);
     return {
       completedCourses: [],
       coursesInProgress: [],
-    }
+    };
   }
-}
+};

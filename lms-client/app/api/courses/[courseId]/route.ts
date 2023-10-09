@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 
 const { Video } = new Mux(
   process.env.MUX_TOKEN_ID!,
-  process.env.MUX_TOKEN_SECRET!,
+  process.env.MUX_TOKEN_SECRET!
 );
 
 export async function DELETE(
@@ -29,9 +29,9 @@ export async function DELETE(
         chapters: {
           include: {
             muxData: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!course) {
@@ -65,19 +65,39 @@ export async function PATCH(
     const { userId } = auth();
     const { courseId } = params;
     const values = await req.json();
+    const { tagIds } = values; // assuming tagIds is an array of tag ids to connect
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const existingCourse = await db.course.findUnique({
+      where: { id: courseId },
+      select: { tags: true },
+    });
+
+    const tags = existingCourse?.tags.map((tag) => tag.tagId);
+
+    const newTagIds = tagIds.filter((tagId: string) => !tags?.includes(tagId));
+    if (!existingCourse) {
+      console.log(`[ERROR] Course with id ${courseId} not found.`);
+      // Provide a user-friendly message in production
+      return new NextResponse("Course not found", { status: 404 });
+    }
+
     const course = await db.course.update({
       where: {
         id: courseId,
-        userId
       },
       data: {
-        ...values,
-      }
+        tags: {
+          create: newTagIds.map((tagId: string) => ({
+            tag: {
+              connect: { id: tagId },
+            },
+          })),
+        },
+      },
     });
 
     return NextResponse.json(course);

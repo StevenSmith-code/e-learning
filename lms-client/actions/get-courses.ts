@@ -1,10 +1,13 @@
-import { Category, Course } from "@prisma/client";
-
 import { getProgress } from "@/actions/get-progress";
 import { db } from "@/lib/db";
 
-type CourseWithProgressWithCategory = Course & {
-  category: Category | null;
+import { Course, Tag } from "@prisma/client";
+
+type CourseWithProgressWithTags = Course & {
+  tags: ({ tag: { id: string; name: string } } & {
+    courseId: string;
+    tagId: string;
+  })[];
   chapters: { id: string }[];
   progress: number | null;
 };
@@ -12,51 +15,59 @@ type CourseWithProgressWithCategory = Course & {
 type GetCourses = {
   userId: string;
   title?: string;
-  categoryId?: string;
+  tagId?: string;
 };
 
 export const getCourses = async ({
   userId,
   title,
-  categoryId
-}: GetCourses): Promise<CourseWithProgressWithCategory[]> => {
+  tagId,
+}: GetCourses): Promise<CourseWithProgressWithTags[]> => {
   try {
     const courses = await db.course.findMany({
       where: {
         isPublished: true,
         title: {
-          contains: title,
+          contains: title || "", // Adding fallback in case title is undefined
         },
-        categoryId,
+        tags: {
+          some: {
+            tagId,
+          },
+        },
       },
       include: {
-        category: true,
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
         chapters: {
           where: {
             isPublished: true,
           },
           select: {
             id: true,
-          }
+          },
         },
         purchases: {
           where: {
             userId,
-          }
-        }
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
-      }
+      },
     });
 
-    const coursesWithProgress: CourseWithProgressWithCategory[] = await Promise.all(
-      courses.map(async course => {
+    const coursesWithProgress: CourseWithProgressWithTags[] = await Promise.all(
+      courses.map(async (course) => {
         if (course.purchases.length === 0) {
           return {
             ...course,
             progress: null,
-          }
+          };
         }
 
         const progressPercentage = await getProgress(userId, course.id);
@@ -73,4 +84,4 @@ export const getCourses = async ({
     console.log("[GET_COURSES]", error);
     return [];
   }
-}
+};

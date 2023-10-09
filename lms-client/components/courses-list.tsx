@@ -1,20 +1,21 @@
-import { Category, Course } from "@prisma/client";
+import { Tag, Course } from "@prisma/client";
 
 import { CourseCard } from "@/components/course-card";
 
-type CourseWithProgressWithCategory = Course & {
-  category: Category | null;
+type CourseWithProgressWithTags = Course & {
+  tags: ({ tag: { id: string; name: string } } & {
+    courseId: string;
+    tagId: string;
+  })[];
   chapters: { id: string }[];
   progress: number | null;
 };
 
 interface CoursesListProps {
-  items: CourseWithProgressWithCategory[];
+  items: CourseWithProgressWithTags[];
 }
 
-export const CoursesList = ({
-  items
-}: CoursesListProps) => {
+export const CoursesList = ({ items }: CoursesListProps) => {
   return (
     <div>
       <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
@@ -27,7 +28,7 @@ export const CoursesList = ({
             chaptersLength={item.chapters.length}
             price={item.price!}
             progress={item.progress}
-            category={item?.category?.name!}
+            tags={item.tags.map((tag) => tag.tag.name).join(", ")}
           />
         ))}
       </div>
@@ -37,5 +38,5 @@ export const CoursesList = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};

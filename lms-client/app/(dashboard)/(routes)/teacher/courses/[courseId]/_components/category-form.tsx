@@ -8,8 +8,7 @@ import { Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Course } from "@prisma/client";
-
+import ReactSelect from "react-select";
 import {
   Form,
   FormControl,
@@ -19,17 +18,25 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { Combobox } from "@/components/ui/combobox";
+import { Course as PrismaCourse } from "@prisma/client";
+
+interface Tag {
+  id: string;
+  name: string;
+}
+
+export interface CourseWithTags extends PrismaCourse {
+  tags: Tag[];
+}
 
 interface CategoryFormProps {
-  initialData: Course;
+  initialData: CourseWithTags;
   courseId: string;
-  options: { label: string; value: string; }[];
-};
+  options: { label: string; value: string }[];
+}
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  tagIds: z.array(z.string().min(1)),
 });
 
 export const CategoryForm = ({
@@ -46,7 +53,7 @@ export const CategoryForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || ""
+      tagIds: initialData?.tags?.map((tag) => tag.id) || [],
     },
   });
 
@@ -61,9 +68,11 @@ export const CategoryForm = ({
     } catch {
       toast.error("Something went wrong");
     }
-  }
+  };
 
-  const selectedOption = options.find((option) => option.value === initialData.categoryId);
+  const selectedOptions = options.filter((option) =>
+    initialData.tags.some((tag) => tag.id === option.value)
+  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -81,11 +90,13 @@ export const CategoryForm = ({
         </Button>
       </div>
       {!isEditing && (
-        <p className={cn(
-          "text-sm mt-2",
-          !initialData.categoryId && "text-slate-500 italic"
-        )}>
-          {selectedOption?.label || "No category"}
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.tags.length && "text-slate-500 italic"
+          )}
+        >
+          {selectedOptions.map((opt) => opt.label).join(", ") || "No category"}
         </p>
       )}
       {isEditing && (
@@ -96,13 +107,21 @@ export const CategoryForm = ({
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="tagIds"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox
-                      options={...options}
-                      {...field}
+                    <ReactSelect
+                      isMulti
+                      options={options}
+                      value={options.filter((option) =>
+                        field.value.includes(option.value)
+                      )}
+                      onChange={(selectedOptions) => {
+                        const ids = selectedOptions.map((o) => o.value);
+                        field.onChange(ids);
+                      }}
+                      onBlur={field.onBlur}
                     />
                   </FormControl>
                   <FormMessage />
@@ -110,10 +129,7 @@ export const CategoryForm = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button
-                disabled={!isValid || isSubmitting}
-                type="submit"
-              >
+              <Button disabled={!isValid || isSubmitting} type="submit">
                 Save
               </Button>
             </div>
@@ -121,5 +137,5 @@ export const CategoryForm = ({
         </Form>
       )}
     </div>
-  )
-}
+  );
+};

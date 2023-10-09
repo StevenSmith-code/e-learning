@@ -4,7 +4,7 @@ const database = new PrismaClient();
 
 async function main() {
   try {
-    await database.category.createMany({
+    await database.tag.createMany({
       data: [
         { name: "Computer Science" },
         { name: "Music" },
@@ -13,12 +13,12 @@ async function main() {
         { name: "Accounting" },
         { name: "Engineering" },
         { name: "Filming" },
-      ]
+      ],
     });
 
-    console.log("Success");
+    console.log("tags seeded");
   } catch (error) {
-    console.log("Error seeding the database categories", error);
+    console.log("Error seeding the database", error);
   } finally {
     await database.$disconnect();
   }

@@ -12,28 +12,34 @@ interface SearchPageProps {
   searchParams: {
     title: string;
     categoryId: string;
-  }
-};
+  };
+}
 
-const SearchPage = async ({
-  searchParams
-}: SearchPageProps) => {
+const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const { userId } = auth();
 
   if (!userId) {
     return redirect("/");
   }
 
-  const categories = await db.category.findMany({
+  const categories = await db.tag.findMany({
     orderBy: {
-      name: "asc"
-    }
+      name: "asc",
+    },
   });
 
-  const courses = await getCourses({
+  let courses = await getCourses({
     userId,
     ...searchParams,
   });
+  courses = courses.map((course) => ({
+    ...course,
+    tags: course.tags.map((t) => ({
+      tag: t.tag,
+      courseId: course.id,
+      tagId: t.tag.id,
+    })),
+  }));
 
   return (
     <>
@@ -41,13 +47,11 @@ const SearchPage = async ({
         <SearchInput />
       </div>
       <div className="p-6 space-y-4">
-        <Categories
-          items={categories}
-        />
+        <Categories items={categories} />
         <CoursesList items={courses} />
       </div>
     </>
-   );
-}
- 
+  );
+};
+
 export default SearchPage;

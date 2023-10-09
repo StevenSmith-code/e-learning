@@ -23,18 +23,28 @@ export async function PATCH(
         chapters: {
           include: {
             muxData: true,
-          }
-        }
-      }
+          },
+        },
+        tags: true, // Include tags to validate them before publishing
+      },
     });
 
     if (!course) {
       return new NextResponse("Not found", { status: 404 });
     }
 
-    const hasPublishedChapter = course.chapters.some((chapter) => chapter.isPublished);
+    const hasPublishedChapter = course.chapters.some(
+      (chapter) => chapter.isPublished
+    );
 
-    if (!course.title || !course.description || !course.imageUrl || !course.categoryId || !hasPublishedChapter) {
+    // Validate that course has necessary fields before publishing
+    if (
+      !course.title ||
+      !course.description ||
+      !course.imageUrl ||
+      !hasPublishedChapter ||
+      course.tags.length === 0
+    ) {
       return new NextResponse("Missing required fields", { status: 401 });
     }
 
@@ -45,12 +55,12 @@ export async function PATCH(
       },
       data: {
         isPublished: true,
-      }
+      },
     });
 
     return NextResponse.json(publishedCourse);
   } catch (error) {
     console.log("[COURSE_ID_PUBLISH]", error);
     return new NextResponse("Internal Error", { status: 500 });
-  } 
+  }
 }
