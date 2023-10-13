@@ -65,7 +65,7 @@ export async function PATCH(
     const { userId } = auth();
     const { courseId } = params;
     const values = await req.json();
-    const { tagIds, ...updateValues } = values;
+    const { tagIds = [], ...updateValues } = values;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -81,9 +81,8 @@ export async function PATCH(
       return new NextResponse("Course not found", { status: 404 });
     }
 
-    const existingTagIds = existingCourse.tags.map((tag) => tag.tagId);
+    const existingTagIds = existingCourse?.tags?.map((tag) => tag.tagId) || [];
 
-    // Identify new and removed tags
     const newTagIds = tagIds.filter(
       (tagId: string) => !existingTagIds.includes(tagId)
     );
