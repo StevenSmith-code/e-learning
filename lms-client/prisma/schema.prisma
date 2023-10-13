@@ -114,11 +114,12 @@ model CourseTag {
   
   tagId String
   tag Tag @relation(fields: [tagId], references: [id])
-  
-  @@unique([tagId, courseId])
+
+  @@id([courseId, tagId])
   @@index([tagId])
   @@index([courseId])
 }
+
 
 model StripeCustomer {
   id String @id @default(uuid())

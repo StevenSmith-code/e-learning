@@ -65,7 +65,7 @@ export async function PATCH(
     const { userId } = auth();
     const { courseId } = params;
     const values = await req.json();
-    const { tagIds } = values; // assuming tagIds is an array of tag ids to connect
+    const { tagIds, ...updateValues } = values;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -76,24 +76,36 @@ export async function PATCH(
       select: { tags: true },
     });
 
-    const tags = existingCourse?.tags.map((tag) => tag.tagId);
-
-    const newTagIds = tagIds.filter((tagId: string) => !tags?.includes(tagId));
     if (!existingCourse) {
       console.log(`[ERROR] Course with id ${courseId} not found.`);
-      // Provide a user-friendly message in production
       return new NextResponse("Course not found", { status: 404 });
     }
 
+    const existingTagIds = existingCourse.tags.map((tag) => tag.tagId);
+
+    // Identify new and removed tags
+    const newTagIds = tagIds.filter(
+      (tagId: string) => !existingTagIds.includes(tagId)
+    );
+    const removedTagIds = existingTagIds.filter(
+      (tagId: string) => !tagIds.includes(tagId)
+    );
+
+    // Update the course, adding new tags and removing old ones
     const course = await db.course.update({
       where: {
         id: courseId,
       },
       data: {
+        ...updateValues,
         tags: {
           create: newTagIds.map((tagId: string) => ({
-            tag: {
-              connect: { id: tagId },
+            tagId: tagId,
+          })),
+          delete: removedTagIds.map((tagId: string) => ({
+            courseId_tagId: {
+              courseId: courseId,
+              tagId: tagId,
             },
           })),
         },
