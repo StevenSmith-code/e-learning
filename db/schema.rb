@@ -14,6 +14,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_160941) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto" if adapter_name == "PostgreSQL" # UUID support for PostgreSQL
+
+  create_table "tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_tags_on_name", unique: true
+  end
+
+  create_table "course_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "course_id", null: false
+    t.uuid "tag_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["course_id", "tag_id"], name: "index_course_tags_on_course_id_and_tag_id", unique: true
+    t.index ["tag_id"], name: "index_course_tags_on_tag_id"
+  end
   
   create_table "attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
@@ -22,10 +38,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_160941) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
     t.index ["course_id"], name: "index_attachments_on_course_id"
-  end
-
-  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
   end
 
   create_table "chapters", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -86,5 +98,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_160941) do
     t.index ["chapter_id"], name: "index_user_progresses_on_chapter_id"
     t.index ["user_id", "chapter_id"], name: "index_user_progresses_on_user_id_and_chapter_id", unique: true
   end
+
+  add_foreign_key "course_tags", "courses"
+  add_foreign_key "course_tags", "tags"
 
 end
